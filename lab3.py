@@ -1,5 +1,10 @@
 import random
+from math import sin,log,e
 
+def mu(x):
+	if int(x,2) == 0:
+		return 0.0
+	return round(5 * sin(int(x, 2)) + log(int(x, 2), e), 2)
 def randstr(len)->str:
     mystr = ''
     for i in range(len):
@@ -7,6 +12,7 @@ def randstr(len)->str:
     return mystr
 
 def createArea(stroka):
+    area=[]
     area.clear()
     for i in range(len(stroka)):
         tempstr = ''
@@ -15,57 +21,39 @@ def createArea(stroka):
         else:
             tempstr=stroka[:i]+'1'+stroka[i+1:]
         area.append(tempstr)
+    return area
 
-def toBin(number):
-    mystr=''
-    for i in range(LenS):
-        if(number):
-            mystr=str(number%2)+mystr
-            number=number//2
-        else:
-            mystr='0'+mystr
-    return mystr
 
-LenS=5
-prostranstvo={}
-for i in range(pow(2,LenS)):
-    prostranstvo[toBin(i)]=random.randint(0,100)
 
-MaxS=randstr(LenS)
-MaxMu=prostranstvo[MaxS]
-N=int(input("введите N"))
-area=[]
-createArea(MaxS)
 
-for i in range(N):
-    print("Шаг " + str(i + 1) + ":")
-    print(f"maxS = {MaxS}   maxMu = {MaxMu}")
-    print("area:")
-
-    if(len(area)>0):
-        tempMu = 0
+def MVHSH(S="",N=0):
+    print("!!!!!!!!!!! Метод восхождения на холм в ширину !!!!!!!!!!!!")
+    MaxS=S
+    MaxMu=mu(MaxS)
+    lenS=len(S)
+    area=createArea(MaxS)
+    for i in range(N):
+        print(f"////////////////////\nШаг {i + 1}")
+        print(f"MaxS - {MaxS}    MaxMu - {MaxMu}")
         tempS=""
-        for j in range(len(area)):
-            if prostranstvo[area[j]] >tempMu:
-                tempMu=prostranstvo[area[j]]
-                tempS=area[j]
+        tempMu=0
+        print("Окрестность:")
+        for j in area:
+            print(j, " - ", mu(j))
+            if mu(j)>tempMu:
+                tempS=j
+                tempMu=mu(tempS)
 
-        for k in area:
-            print(k, " - ", prostranstvo[k])
-        print(f"выбрана кодировка - {tempS}    Mu =  {tempMu}")
-    else:
-        print("исчерпаны кодировки")
-        break
+        print(f"Выбрана кодировка - {tempS}  ее приспособленностьт - {tempMu}")
 
+        if tempMu>MaxMu:
+            print(f"Смена MaxS на {tempS} ,  смена MaxMu на {tempMu}")
+            MaxMu=tempMu
+            MaxS=tempS
+            area=createArea(MaxS)
+        else:
+            print("Достигнут локальный оптимум")
+            break
+    print(f"Итог:\nMaxS - {MaxS}   maxMu - {MaxMu}")
 
-    if tempMu > MaxMu :
-        print(f"Смена maxS с {MaxS}  на {tempS}")
-        print(f"Смена MaxMu c {MaxMu} на {tempMu}")
-        MaxMu=tempMu
-        MaxS=tempS
-        createArea(MaxS)
-    else:
-        print("приспособленность лучшей кодировки в окрестности меньше текущей,"
-              " достигнут локальный оптимум")
-        break
-    print("\n\n")
+MVHSH("1010010",10)

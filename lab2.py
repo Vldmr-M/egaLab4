@@ -1,6 +1,10 @@
 import random
-def criterion(str)->float:
-    return pow(int(str,2)-pow(2,LenOfS-1),2)
+from math import sin,log,e
+
+def mu(x):
+	if int(x,2) == 0:
+		return 0.0
+	return round(5 * sin(int(x, 2)) + log(int(x, 2), e), 2)
 
 def toBin(len,number)->str:
     mystr=''
@@ -20,6 +24,7 @@ def randstr(len)->str:
 
 
 def createArea(stroka):
+    area=[]
     area.clear()
     for i in range(len(stroka)):
         tempstr = ''
@@ -28,39 +33,35 @@ def createArea(stroka):
         else:
             tempstr=stroka[:i]+'1'+stroka[i+1:]
         area.append(tempstr)
+    return area
 
 
+def MVHG(S="",N=0):
+    print("!!!!!!!!!! Метод восхождения на холм в глубину !!!!!!!!!!!")
+    MaxS=S
+    MaxMu=mu(MaxS)
+    lenS=len(S)
+    area=createArea(MaxS)
+    for i in range(N):
+        print(f"////////////////////\nШаг {i + 1}")
+        print(f"MaxS - {MaxS}    MaxMu - {MaxMu}")
+        if len(area)>0:
+            print("Окрестность:")
+            for j in area:
+                print(j," - ",mu(j))
+            tempS=random.choice(area)
+            tempMu=mu(tempS)
+            area.remove(tempS)
+            print(f"Выбрана кодировка - {tempS}  ее приспособленностьт - {tempMu}")
+        else:
+            print("Кодировки исчерпаны, достигнут локальный оптимум")
+            break
 
-LenOfS=int(input('введите длину строки'))
-n=int(input('введите кол-во итераций'))
-area=[]
-massCrit = {}
-maxCrit=0
-maxS=randstr(LenOfS)
+        if tempMu>MaxMu:
+            print(f"Смена MaxS на {tempS} ,  смена MaxMu на {tempMu}")
+            MaxMu=tempMu
+            MaxS=tempS
+            area=createArea(MaxS)
+    print(f"Итог:\nMaxS - {MaxS}   maxMu - {MaxMu}")
 
-createArea(maxS)
-
-for i in range(2**LenOfS):
-    massCrit[toBin(LenOfS,i)]=random.randint(0,100)
-
-for i in range(32):
-    print(toBin(LenOfS,i)," - ",massCrit[toBin(LenOfS,i)])
-
-for i in range(n):
-
-    print(f'/////////////////////\nSTEP {i+1}\ncurrS - {maxS}    '
-          f' currMax - {massCrit[maxS]}')
-    if(len(area)>0):
-        index=random.randint(0,100)%len(area)
-        tempS=area[index]
-        area.pop(index)
-
-    print(f'tempS - {tempS}    tempMax - {massCrit[tempS]}')
-
-    if massCrit[tempS] > massCrit[maxS] :
-        print('Maximum has changed\n')
-        maxS=tempS
-        maxCrit=massCrit[tempS]
-        createArea(maxS)
-
-print(maxS,maxCrit)
+MVHG("1",10)

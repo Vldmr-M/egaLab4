@@ -1,6 +1,11 @@
 import random
-def criterion(str)->float:
-    return pow(int(str,2)-pow(2,lenOFs-1),2)
+from math import sin,log,e
+
+def mu(x):
+	if int(x,2) == 0:
+		return 0.0
+	return round(5 * sin(int(x, 2)) + log(int(x, 2), e), 2)
+
 
 def randstr(len)->str:
     mystr = ''
@@ -8,18 +13,6 @@ def randstr(len)->str:
         mystr = mystr+(str(random.randint(0,1000)%2))
     return mystr
 
-
-
-iterOFsearch=10
-lenOFs=15
-s=""
-max=0
-maxS=""
-iterOFsearch = int(input('введите кол-во итераций:\n'))
-lenOFs = int(input('введите длину строки:\n'))
-
-#вывод ландшафта
-#///////////////////////////////////////////////////
 def toBin(len,number)->str:
     mystr=''
     for i in range(len):
@@ -30,26 +23,24 @@ def toBin(len,number)->str:
             mystr='0'+mystr
     return mystr
 
-print('ВЫВОД ЛАНДШАФТА')
-for i in range(32):
-    print(toBin(10,i),'    критерий -  ' ,criterion(toBin(10,i)))
-#////////////////////////////////////////////////////
 
-for i in range(iterOFsearch):
-    s=randstr(lenOFs)
-    print("============\nШАГ" + str(i+1))
-    print('s = ' + s + "   или  " + str(int(s,2)),end=';  ' )
-    print('критерий - ' + str(criterion(s)))
+def MonteKarlo(S="",N=0):
+    print("!!!!!!!   Метод Монте - Карло !!!!!!!!")
+    MaxS=S
+    MaxMu=mu(S)
+    lenS=len(S)
 
-    if(criterion(s)>max):
-        max = criterion(s)
-        maxS = s
-        print(f'maximum has changed - {max}')
+    for i in range(N):
+        print(f"////////////////////\nШаг {i+1}")
+        print(f"MaxS - {MaxS}    MaxMu - {MaxMu}")
+        tempS=randstr(lenS)
+        tempMu=mu(tempS)
+        print(f"выбранная кодировка - {tempS}   ее приспособленность - {tempMu}")
 
+        if tempMu>MaxMu:
+            print(f"Смена MaxS на {tempS} ,  смена MaxMu на {tempMu}")
+            MaxS=tempS
+            MaxMu=tempMu
+    print(f"Итог:\nMaxS - {MaxS}   maxMu - {MaxMu}")
 
-
-    print(f'current max = {max}    current maxS = {maxS}')
-
-print('=============\nИТОГ',end='')
-print(f"\nmax={max}\nmaxS={maxS}")
-
+MonteKarlo('1',10)
